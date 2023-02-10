@@ -10,13 +10,42 @@ function App() {
     dateOfBirth:null,
     address:null,
   });
+  const [stage,setStage]=useState(1);
+  let uid=null;
+  const sendData=()=>{
+    let xhr =new XMLHttpRequest();
+    xhr.open('POST','reg');
+    xhr.setRequestHeader('Content-Type','application/json');
+    xhr.send(JSON.stringify(formData));
+    xhr.onload=()=>{
+      let res=JSON.parse(xhr.responseText);
+      if(!res.error){
+        uid=res.uid;
+        setStage(2);
+      }
+    }
+  }
+
+  const payLater=()=>{
+    let xhr =new XMLHttpRequest();
+    xhr.open('POST','paylater');
+    xhr.setRequestHeader('Content-Type','application/json');
+    xhr.send(JSON.stringify({uid}));
+    xhr.onload=()=>{
+      let res=JSON.parse(xhr.responseText);
+      if(!res.error){
+        setStage(3);
+      }
+    }
+  }
   return (
     <div className="container">
       <div className="form">
         <div className="horizontal">
-          <h1>Registration</h1>
-          <Progress stage={1}/>
+        <h1>{stage==1?"Registration":"Confirmation"}</h1>
         </div>
+      {stage==1?
+      <>
         <div className="inputwrap">
           <div className="horizontal">
             <input placeholder="First Name" onChange={(e)=>{setformData({...formData,firstName:e.target.value})}}/>
@@ -33,9 +62,18 @@ function App() {
             <input placeholder="Date Of Boirth" type="date" onChange={(e)=>{setformData({...formData,dateOfBirth:e.target.value})}}/>
           </div>
           <input placeholder="Address" onChange={(e)=>{setformData({...formData,address:e.target.value})}}/>
-        <div className="button" onClick={()=>{console.log(formData);}}>Submit</div>
+        <div className="button" onClick={sendData}>Submit</div>
         </div>
+        </>:<>
+        
+        <p>
+          Thank You For Your Registration,Please Check Your Email For Further Notification
+        </p>
+        
+        </>
+      }
       </div>
+
       <div class="imagewrap">
         <img src="./1.png"/>
       </div>
@@ -44,14 +82,3 @@ function App() {
 }
 
 export default App;
-
-const Progress=({stage})=>{
-  return(
-    <div className="progress">
-      <hr/>
-      <div className={stage>=1?'checked':'uncheked'}>1</div>
-      <div className={stage>=2?'checked':'uncheked'}>2</div>
-      <div className={stage>=3?'checked':'uncheked'}>3</div>
-    </div>
-  )
-}

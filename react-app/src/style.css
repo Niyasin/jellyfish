@@ -1,5 +1,5 @@
 :root{
-  --primary:rgb(29, 79, 83);
+  --primary:#1d4f53;
   --bg:#d8edfc;
   --bg2:#f0f9ff;
 }
@@ -120,4 +120,18 @@ input[type=checkbox]{
 .checked{
   background: var(--primary);
   color: var(--bg);
+}
+table{
+  width:400px;
+  border-collapse: collapse;
+  margin: 5% 0%;
+}
+td{
+  padding:2% 5%;
+  border: 1px solid #999;
+}
+p{
+  width:400px;
+  font-size: 18px;
+  color:var(--primary);
 }
