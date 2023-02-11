@@ -13,7 +13,7 @@ const write=async (values)=>{
     let res = await sheet.spreadsheets.values.append(
         {
             spreadsheetId:process.env.SHEET,
-            range,
+            range:'A1:J1',
             valueInputOption:'RAW',
             resource:{values}
         });
