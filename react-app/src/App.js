@@ -1,43 +1,44 @@
-import { useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import {motion,useAnimationControls} from 'framer-motion'
 function App() {
-  const [formData,setformData]=useState({
-    firstName:null,
-    lastName:null,
-    email:null,
-    phone:null,
-    gender:null,
-    dateOfBirth:null,
-    address:null,
+    const [formData,setformData]=useState({
+    firstName:'',
+    lastName:'',
+    email:'',
+    phone:'',
+    gender:'Male',
+    dateOfBirth:'',
+    address:'',
   });
+  const message=useRef(null);
   const [stage,setStage]=useState(1);
   let uid=null;
   const sendData=()=>{
-    let xhr =new XMLHttpRequest();
-    xhr.open('POST','reg');
-    xhr.setRequestHeader('Content-Type','application/json');
-    xhr.send(JSON.stringify(formData));
-    xhr.onload=()=>{
-      let res=JSON.parse(xhr.responseText);
-      if(!res.error){
-        uid=res.uid;
-        setStage(2);
+    let valied=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(formData.firstName.length 
+      && formData.lastName.length 
+      && formData.email.length 
+      && formData.phone.length 
+      && formData.dateOfBirth.length 
+      && formData.address.length
+      && valied.test(formData.email)
+      ){
+      let xhr =new XMLHttpRequest();
+      xhr.open('POST','reg');
+      xhr.setRequestHeader('Content-Type','application/json');
+      xhr.send(JSON.stringify(formData));
+      xhr.onload=()=>{
+        let res=JSON.parse(xhr.responseText);
+        if(!res.error){
+          uid=res.uid;
+          setStage(2);
+        }
       }
+    }else{
+      control.start({opacity:[0,1,1,1,1,1,1,0],transition:{duration:3}});
     }
   }
-
-  const payLater=()=>{
-    let xhr =new XMLHttpRequest();
-    xhr.open('POST','paylater');
-    xhr.setRequestHeader('Content-Type','application/json');
-    xhr.send(JSON.stringify({uid}));
-    xhr.onload=()=>{
-      let res=JSON.parse(xhr.responseText);
-      if(!res.error){
-        setStage(3);
-      }
-    }
-  }
+  const control=useAnimationControls();
   return (
     <div className="container">
       <div className="form">
@@ -52,17 +53,18 @@ function App() {
             <input placeholder="Last Name" onChange={(e)=>{setformData({...formData,lastName:e.target.value})}}/>
           </div>
           <input placeholder="Email" onChange={(e)=>{setformData({...formData,email:e.target.value})}}/>
-          <input placeholder="Phone" onChange={(e)=>{setformData({...formData,phone:e.target.value})}}/>
+            <input placeholder="Phone" onChange={(e)=>{setformData({...formData,phone:e.target.value})}}/>
           <div className="horizontal">
             <select placeholder="Pronouns" onChange={(e)=>{setformData({...formData,gender:e.target.value})}}>
-              <option value={'male'}>He/Him</option>
-              <option value={'female'}>She/Her</option>
+              <option value={'Male'}>Male</option>
+              <option value={'Female'}>Female</option>
               <option value={null} defaultValue>Prefer not to say</option>
             </select>
             <input placeholder="Date Of Boirth" type="date" onChange={(e)=>{setformData({...formData,dateOfBirth:e.target.value})}}/>
           </div>
           <input placeholder="Address" onChange={(e)=>{setformData({...formData,address:e.target.value})}}/>
-        <div className="button" onClick={sendData}>Submit</div>
+            <div className="button" onClick={sendData}>Submit</div>
+           
         </div>
         </>:<>
         
@@ -73,8 +75,12 @@ function App() {
         </>
       }
       </div>
-
-      <div class="imagewrap">
+      <motion.div animate={control} initial={{opacity:0}}>
+        <div className="message" ref={message}>
+        Please fill Valied Data !
+        </div>
+      </motion.div>
+      <div className="imagewrap">
         <img src="./1.png"/>
       </div>
       </div>

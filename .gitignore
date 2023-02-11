@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /react-app/node_modules
+/react-app/build
 /react-app/.pnp
 /react-app/.pnp.js
 # testing
